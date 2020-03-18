@@ -35,7 +35,7 @@ export class Database {
         const objectStore = transaction.objectStore(TBName);
         const read = objectStore.get(primaryKey);
         read.onsuccess = e => {
-          log.info("get result:", read.result);
+          log.info("Got result:", read.result);
           resolve(read.result);
         };
         read.onerror = e => {
@@ -80,8 +80,8 @@ export class Database {
           .objectStore(TBName)
           .add(obj);
         add.onsuccess = e => {
-          // log.info("1 record has been added to your database.");
-          resolve("1 record has been added to your database.");
+          log.info("1 record has been added to your database.");
+          resolve();
         };
         add.onerror = e => {
           reject(new Error(`Unable to add data records: ${e.target.errorCode}`));
@@ -101,7 +101,8 @@ export class Database {
           .objectStore(TBName)
           .delete(primaryKey);
         remove.onsuccess = e => {
-          resolve("This entry has been removed from your database.");
+          log.info("1 record has been added to your database.");
+          resolve();
         };
         remove.onerror = e => {
           reject(new Error(`This entry could not be removed from database: ${e.target.errorCode}`));
@@ -121,7 +122,8 @@ export class Database {
           .objectStore(TBName);
         const clear = objectStore.clear();
         clear.onsuccess = e => {
-          resolve("Successfully removed all entries in the table");
+          log.info("Successfully removed all entries in the table");
+          resolve();
         };
         clear.onerror = e => {
           reject(new Error(`Failed to remove entries in table: ${e.target.errorCode}`));
