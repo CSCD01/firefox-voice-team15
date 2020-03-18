@@ -5,6 +5,7 @@ export class Database {
     this.dbName = dbName;
     this.readonly = "readonly";
     this.readwrite = "readwrite";
+    this.order = "prev";
   }
 
   createTable(TBName, primaryKey, version) {
@@ -39,12 +40,18 @@ export class Database {
           resolve(read.result);
         };
         read.onerror = e => {
-          reject(new Error(`Unable to retrieve data from database: ${e.target.errorCode}`));
+          reject(
+            new Error(
+              `Unable to retrieve data from database: ${e.target.errorCode}`
+            )
+          );
         };
         database.close();
       };
       request.onerror = e => {
-        reject(new Error(`Unable to retrieve from database: ${e.target.errorCode}`));
+        reject(
+          new Error(`Unable to retrieve from database: ${e.target.errorCode}`)
+        );
       };
     });
   }
@@ -55,13 +62,24 @@ export class Database {
       request.onsuccess = e => {
         const database = e.target.result;
         const objectStore = database.transaction(TBName).objectStore(TBName);
-        const request = objectStore.getAll();
+        const list = [];
+        // return all objects from the object store according to `this.order`
+        const request = objectStore.openCursor(null, this.order);
         request.onsuccess = e => {
-          const list = e.target.result;
-          resolve(list);
+          const cursor = e.target.result;
+          if (cursor) {
+            list.push(cursor.value);
+            cursor.continue();
+          } else {
+            resolve(list);
+          }
         };
         request.onerror = e => {
-          reject(new Error(`Unable to retrieve all data from database: ${e.target.errorCode}`));
+          reject(
+            new Error(
+              `Unable to retrieve all data from database: ${e.target.errorCode}`
+            )
+          );
         };
       };
     });
@@ -81,7 +99,9 @@ export class Database {
           resolve();
         };
         add.onerror = e => {
-          reject(new Error(`Unable to add data records: ${e.target.errorCode}`));
+          reject(
+            new Error(`Unable to add data records: ${e.target.errorCode}`)
+          );
         };
         database.close();
       };
@@ -102,7 +122,11 @@ export class Database {
           resolve();
         };
         remove.onerror = e => {
-          reject(new Error(`This entry could not be removed from database: ${e.target.errorCode}`));
+          reject(
+            new Error(
+              `This entry could not be removed from database: ${e.target.errorCode}`
+            )
+          );
         };
         database.close();
       };
@@ -123,7 +147,11 @@ export class Database {
           resolve();
         };
         clear.onerror = e => {
-          reject(new Error(`Failed to remove entries in table: ${e.target.errorCode}`));
+          reject(
+            new Error(
+              `Failed to remove entries in table: ${e.target.errorCode}`
+            )
+          );
         };
         database.close();
       };
