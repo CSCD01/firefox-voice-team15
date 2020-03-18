@@ -22,7 +22,7 @@ const METADATA_ATTRIBUTES = new Set([
 export const intents = {};
 let lastIntent;
 const intentHistory = [];
-const db = new Database("myDB");
+const db = new Database("voice");
 const utteranceTable = "utterance";
 const primaryKey = "timestamp";
 db.createTable(utteranceTable, primaryKey).then(result =>
