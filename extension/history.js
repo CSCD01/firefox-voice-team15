@@ -7,9 +7,9 @@ export class Database {
     this.readwrite = "readwrite";
   }
 
-  createTable(TBName, primaryKey) {
+  createTable(TBName, primaryKey, version) {
     return new Promise((resolve, reject) => {
-      const request = indexedDB.open(this.dbName);
+      const request = indexedDB.open(this.dbName, version);
       request.onupgradeneeded = e => {
         const database = e.target.result;
         database.createObjectStore(TBName, {
@@ -50,21 +50,18 @@ export class Database {
   }
 
   getAll(TBName) {
-    return new Promise(resolve => {
+    return new Promise((resolve, reject) => {
       const request = indexedDB.open(this.dbName);
       request.onsuccess = e => {
         const database = e.target.result;
         const objectStore = database.transaction(TBName).objectStore(TBName);
-        const list = [];
-
-        objectStore.openCursor().onsuccess = event => {
-          const cursor = event.target.result;
-          if (cursor) {
-            list.push(cursor.value);
-            cursor.continue();
-          } else {
-            resolve(list);
-          }
+        const request = objectStore.getAll();
+        request.onsuccess = e => {
+          const list = e.target.result;
+          resolve(list);
+        };
+        request.onerror = e => {
+          reject(new Error(`Unable to retrieve all data from database: ${e.target.errorCode}`));
         };
       };
     });
