@@ -22,7 +22,8 @@ export class Database {
         resolve(database);
       };
       request.onerror = e => {
-        reject(new Error(`Failed to create a database: ${e.target.errorCode}`));
+        const code = e.target.errorCode;
+        reject(new Error(`Failed to create a database: ${errorCode}`));
       };
     });
   }
@@ -40,18 +41,14 @@ export class Database {
           resolve(read.result);
         };
         read.onerror = e => {
-          reject(
-            new Error(
-              `Unable to retrieve data from database: ${e.target.errorCode}`
-            )
-          );
+          const code = e.target.errorCode;
+          reject(new Error(`Unable to retrieve data from database: ${code}`));
         };
         database.close();
       };
       request.onerror = e => {
-        reject(
-          new Error(`Unable to retrieve from database: ${e.target.errorCode}`)
-        );
+        const code = e.target.errorCode;
+        reject(new Error(`Unable to retrieve from database: ${code}`));
       };
     });
   }
@@ -75,11 +72,8 @@ export class Database {
           }
         };
         request.onerror = e => {
-          reject(
-            new Error(
-              `Unable to retrieve all data from database: ${e.target.errorCode}`
-            )
-          );
+          const code = e.target.errorCode;
+          reject(new Error(`Unable to retrieve data from database: ${code}`));
         };
       };
     });
@@ -99,9 +93,8 @@ export class Database {
           resolve();
         };
         add.onerror = e => {
-          reject(
-            new Error(`Unable to add data records: ${e.target.errorCode}`)
-          );
+          const code = e.target.errorCode;
+          reject(new Error(`Unable to add data records: ${code}`));
         };
         database.close();
       };
@@ -122,11 +115,8 @@ export class Database {
           resolve();
         };
         remove.onerror = e => {
-          reject(
-            new Error(
-              `This entry could not be removed from database: ${e.target.errorCode}`
-            )
-          );
+          const code = e.target.errorCode;
+          reject(new Error(`Entry could not be removed in databse: ${code}`));
         };
         database.close();
       };
@@ -147,11 +137,8 @@ export class Database {
           resolve();
         };
         clear.onerror = e => {
-          reject(
-            new Error(
-              `Failed to remove entries in table: ${e.target.errorCode}`
-            )
-          );
+          const code = e.target.errorCode;
+          reject(new Error(`Failed to remove entries in database: ${code}`));
         };
         database.close();
       };
