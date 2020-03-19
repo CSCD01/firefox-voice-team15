@@ -5,7 +5,6 @@ export class Database {
     this.dbName = dbName;
     this.readonly = "readonly";
     this.readwrite = "readwrite";
-    this.order = "prev";
   }
 
   createTable(TBName, primaryKey, version) {
@@ -53,15 +52,23 @@ export class Database {
     });
   }
 
-  getAll(TBName) {
+  /*
+   * direction can be "prev" or "next"
+   * "prev" is most recent first (based on primaryKey)
+   * "next" is most recent last (based on primaryKey)
+   */
+  getAll(TBName, direction) {
     return new Promise((resolve, reject) => {
       const request = indexedDB.open(this.dbName);
       request.onsuccess = e => {
         const database = e.target.result;
         const objectStore = database.transaction(TBName).objectStore(TBName);
         const list = [];
-        // return all objects from the object store according to `this.order`
-        const request = objectStore.openCursor(null, this.order);
+        // default to most recent first if direction is null
+        if (direction === null) {
+          direction = "prev";
+        }
+        const request = objectStore.openCursor(null, direction);
         request.onsuccess = e => {
           const cursor = e.target.result;
           if (cursor) {
