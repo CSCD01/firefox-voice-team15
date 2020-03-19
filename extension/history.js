@@ -65,10 +65,9 @@ export class Database {
         const objectStore = database.transaction(TBName).objectStore(TBName);
         const list = [];
         // default to most recent first if direction is null
-        if (direction === null) {
-          direction = "prev";
-        }
-        const request = objectStore.openCursor(null, direction);
+        const request = direction
+          ? objectStore.openCursor(null, direction)
+          : objectStore.openCursor(null, "prev");
         request.onsuccess = e => {
           const cursor = e.target.result;
           if (cursor) {
