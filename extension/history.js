@@ -23,7 +23,7 @@ export class Database {
       };
       request.onerror = e => {
         const code = e.target.errorCode;
-        reject(new Error(`Failed to create a database: ${errorCode}`));
+        reject(new Error(`Failed to create a database: ${code}`));
       };
     });
   }
@@ -111,7 +111,7 @@ export class Database {
           .objectStore(TBName)
           .delete(primaryKey);
         remove.onsuccess = e => {
-          log.info("An entry has been removed from your database.");
+          log.info("This entry has been removed from your database.");
           resolve();
         };
         remove.onerror = e => {
