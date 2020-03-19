@@ -7,12 +7,12 @@ export class Database {
     this.readwrite = "readwrite";
   }
 
-  createTable(TBName, primaryKey, version) {
+  createTable(tbName, primaryKey, version) {
     return new Promise((resolve, reject) => {
       const request = indexedDB.open(this.dbName, version);
       request.onupgradeneeded = e => {
         const database = e.target.result;
-        database.createObjectStore(TBName, {
+        database.createObjectStore(tbName, {
           keyPath: primaryKey,
         });
       };
@@ -27,13 +27,13 @@ export class Database {
     });
   }
 
-  get(primaryKey, TBName) {
+  get(primaryKey, tbName) {
     return new Promise((resolve, reject) => {
       const request = indexedDB.open(this.dbName);
       request.onsuccess = e => {
         const database = e.target.result;
-        const transaction = database.transaction([TBName]);
-        const objectStore = transaction.objectStore(TBName);
+        const transaction = database.transaction([tbName]);
+        const objectStore = transaction.objectStore(tbName);
         const read = objectStore.get(primaryKey);
         read.onsuccess = e => {
           log.info("Got result:", read.result);
@@ -57,12 +57,12 @@ export class Database {
    * "prev" is most recent first (based on primaryKey)
    * "next" is most recent last (based on primaryKey)
    */
-  getAll(TBName, direction) {
+  getAll(tbName, direction) {
     return new Promise((resolve, reject) => {
       const request = indexedDB.open(this.dbName);
       request.onsuccess = e => {
         const database = e.target.result;
-        const objectStore = database.transaction(TBName).objectStore(TBName);
+        const objectStore = database.transaction(tbName).objectStore(tbName);
         const list = [];
         // default to most recent first if direction is null
         const request = direction
@@ -85,14 +85,14 @@ export class Database {
     });
   }
 
-  add(obj, TBName) {
+  add(obj, tbName) {
     return new Promise((resolve, reject) => {
       const request = indexedDB.open(this.dbName);
       request.onsuccess = e => {
         const database = e.target.result;
         const add = database
-          .transaction([TBName], this.readwrite)
-          .objectStore(TBName)
+          .transaction([tbName], this.readwrite)
+          .objectStore(tbName)
           .add(obj);
         add.onsuccess = e => {
           log.info("1 record has been added to your database.");
@@ -107,14 +107,14 @@ export class Database {
     });
   }
 
-  delete(primaryKey, TBName) {
+  delete(primaryKey, tbName) {
     return new Promise((resolve, reject) => {
       const request = indexedDB.open(this.dbName);
       request.onsuccess = e => {
         const database = e.target.result;
         const remove = database
-          .transaction([TBName], this.readwrite)
-          .objectStore(TBName)
+          .transaction([tbName], this.readwrite)
+          .objectStore(tbName)
           .delete(primaryKey);
         remove.onsuccess = e => {
           log.info("This entry has been removed from your database.");
@@ -129,14 +129,14 @@ export class Database {
     });
   }
 
-  clearAll(TBName) {
+  clearAll(tbName) {
     return new Promise((resolve, reject) => {
       const request = indexedDB.open(this.dbName);
       request.onsuccess = e => {
         const database = e.target.result;
         const objectStore = database
-          .transaction(TBName, this.readwrite)
-          .objectStore(TBName);
+          .transaction(tbName, this.readwrite)
+          .objectStore(tbName);
         const clear = objectStore.clear();
         clear.onsuccess = e => {
           log.info("Successfully removed all entries in the table");
