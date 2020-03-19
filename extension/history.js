@@ -111,7 +111,7 @@ export class Database {
           .objectStore(TBName)
           .delete(primaryKey);
         remove.onsuccess = e => {
-          log.info("1 record has been added to your database.");
+          log.info("An entry has been removed from your database.");
           resolve();
         };
         remove.onerror = e => {
