@@ -27,7 +27,7 @@ export class Database {
     });
   }
 
-  get(primaryKey, tbName) {
+  get(tbName, primaryKey) {
     return new Promise((resolve, reject) => {
       const request = indexedDB.open(this.dbName);
       request.onsuccess = e => {
@@ -66,7 +66,7 @@ export class Database {
         const database = e.target.result;
         const objectStore = database.transaction(tbName).objectStore(tbName);
         const list = [];
-        // default to descending order ( or most recent if
+        // default to descending order (or most recent if
         // the primary key is timestamp)
         const request = direction
           ? objectStore.openCursor(null, direction)
@@ -88,7 +88,7 @@ export class Database {
     });
   }
 
-  add(obj, tbName) {
+  add(tbName, obj) {
     return new Promise((resolve, reject) => {
       const request = indexedDB.open(this.dbName);
       request.onsuccess = e => {
@@ -110,7 +110,7 @@ export class Database {
     });
   }
 
-  delete(primaryKey, tbName) {
+  delete(tbName, primaryKey) {
     return new Promise((resolve, reject) => {
       const request = indexedDB.open(this.dbName);
       request.onsuccess = e => {

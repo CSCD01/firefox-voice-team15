@@ -361,7 +361,7 @@ export function getIntentSummary() {
 function addIntentHistory(context) {
   intentHistory.push(context);
   intentHistory.splice(0, intentHistory.length - INTENT_HISTORY_LIMIT);
-  db.add(context, utteranceTable).catch(error => log.error(error));
+  db.add(utteranceTable, context).catch(error => log.error(error));
 }
 
 export function getIntentHistory() {
